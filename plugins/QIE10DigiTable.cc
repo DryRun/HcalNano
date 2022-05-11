@@ -1,6 +1,6 @@
-#include "HCALPFG/HcalNano/interface/QIE11DigiTable.h"
+#include "HCALPFG/HcalNano/interface/QIE10DigiTable.h"
 
-QIE11DigiTable::QIE11DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
+QIE10DigiTable::QIE10DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
     dids_ = _dids;
 
     nTS_ = _nTS;
@@ -10,7 +10,6 @@ QIE11DigiTable::QIE11DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS)
     depths_.resize(dids_.size());
     rawIds_.resize(dids_.size());
     linkErrors_.resize(dids_.size());
-    capidErrors_.resize(dids_.size());
     flags_.resize(dids_.size());
     sois_.resize(dids_.size());
     valids_.resize(dids_.size());
@@ -19,18 +18,21 @@ QIE11DigiTable::QIE11DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS)
     fcs_.resize(nTS_, std::vector<float>(dids_.size()));
     pedestalfcs_.resize(nTS_, std::vector<float>(dids_.size()));
     tdcs_.resize(nTS_, std::vector<int>(dids_.size()));
+    //tetdcs_.resize(nTS_, std::vector<int>(dids_.size()));
     capids_.resize(nTS_, std::vector<int>(dids_.size()));
+    oks_.resize(nTS_, std::vector<bool>(dids_.size()));
+
 }
 
-void QIE11DigiTable::add(const QIE11DataFrame* digi, const edm::ESHandle<HcalDbService>& dbService) {
+void QIE10DigiTable::add(const QIE10DataFrame* digi, const edm::ESHandle<HcalDbService>& dbService) {
     HcalDetId did = digi->detid();
     unsigned int index = std::find(dids_.begin(), dids_.end(), did) - dids_.begin();
     if (index == (dids_.end() - dids_.begin())) {
-        std::cerr << "[QIE11DigiTable] ERROR : Didn't find did " << did << " in table" << std::endl;
+        std::cerr << "[QIE10DigiTable] ERROR : Didn't find did " << did << " in table" << std::endl;
         exit(1);
     }
 
-    CaloSamples digiCaloSamples = hcaldqm::utilities::loadADC2fCDB<QIE11DataFrame>(dbService, did, *digi);
+    CaloSamples digiCaloSamples = hcaldqm::utilities::loadADC2fCDB<QIE10DataFrame>(dbService, did, *digi);
     HcalCalibrations calibrations = dbService->getHcalCalibrations(did);
 
     ietas_[index] = did.ieta();
@@ -39,15 +41,16 @@ void QIE11DigiTable::add(const QIE11DataFrame* digi, const edm::ESHandle<HcalDbS
     depths_[index] = did.depth();
     rawIds_[index] = did.rawId();
     linkErrors_[index] = digi->linkError();
-    capidErrors_[index] = digi->capidError();
     flags_[index] = digi->flags();
 
     for (unsigned int iTS = 0; iTS < (unsigned int)digi->samples(); ++iTS) {
         if ((*digi)[iTS].soi()) {
             sois_[index] = iTS;
         }
+        oks_[iTS][index]         = (*digi)[iTS].ok()
         adcs_[iTS][index]        = (*digi)[iTS].adc();
-        tdcs_[iTS][index]        = (*digi)[iTS].tdc();
+        tdcs_[iTS][index]        = (*digi)[iTS].le_tdc();
+        //tetdcs_[iTS][index]    = (*digi)[iTS].te_tdc();
         capids_[iTS][index]      = (*digi)[iTS].capid();
         fcs_[iTS][index]         = digiCaloSamples[iTS];
         pedestalfcs_[iTS][index] = calibrations.pedestal((*digi)[iTS].capid());
@@ -56,17 +59,17 @@ void QIE11DigiTable::add(const QIE11DataFrame* digi, const edm::ESHandle<HcalDbS
 }
 
 
-void QIE11DigiTable::reset() {
+void QIE10DigiTable::reset() {
     std::fill(ietas_.begin(), ietas_.end(), 0);
     std::fill(iphis_.begin(), iphis_.end(), 0);
     std::fill(subdets_.begin(), subdets_.end(), 0);
     std::fill(depths_.begin(), depths_.end(), 0);
     std::fill(rawIds_.begin(), rawIds_.end(), 0);
-    std::fill(linkErrors_.begin(), linkErrors_.end(), false);
-    std::fill(capidErrors_.begin(), capidErrors_.end(), false);
+    std::fill(linkErrors_.begin(), linkErrors_.end(), 0);
     std::fill(flags_.begin(), flags_.end(), 0);
-    std::fill(sois_.begin(), sois_.end(), 0);
-    std::fill(valids_.begin(), valids_.end(), false);
+    std::fill(sois_.begin(), sois_.end(), -1);
+    std::fill(valids_.begin(), valids_.end(), 0);
+
 
     for (unsigned int i = 0; i < nTS_; ++i) {
         for (unsigned int j = 0; j < dids_.size(); ++j) {
@@ -74,7 +77,9 @@ void QIE11DigiTable::reset() {
             fcs_[i][j] = 0.;
             pedestalfcs_[i][j] = 0.;
             tdcs_[i][j] = 0;
+            //tetdcs_[i][j] = 0;
             capids_[i][j] = 0;
+            oks_[i][j] = 0;
         }
     }
 }

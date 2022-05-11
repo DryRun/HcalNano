@@ -99,10 +99,12 @@ process.load('Configuration.StandardSequences.Reconstruction_Data_cff')
 #------------------------------------------------------------------------------------
 # QIE11 and QIE10 Unpacker
 #------------------------------------------------------------------------------------
-process.hcalDigis.saveQIE11DataNSamples = cms.untracked.vint32(8) 
-process.hcalDigis.saveQIE11DataTags = cms.untracked.vstring( "MYDATAQIE11" )
-process.hcalDigis.saveQIE10DataNSamples = cms.untracked.vint32(8) 
-process.hcalDigis.saveQIE10DataTags = cms.untracked.vstring( "MYDATAQIE10" )
+
+# Note: these lines create additional QIE digi collections with different NSamples, I think...
+#process.hcalDigis.saveQIE11DataNSamples = cms.untracked.vint32(8) 
+#process.hcalDigis.saveQIE11DataTags = cms.untracked.vstring( "MYDATAQIE11" )
+#process.hcalDigis.saveQIE10DataNSamples = cms.untracked.vint32(8) 
+#process.hcalDigis.saveQIE10DataTags = cms.untracked.vstring( "MYDATAQIE10" )
 
 #------------------------------------------------------------------------------------
 # Specify Global Tag
@@ -117,7 +119,7 @@ print(" ")
 #------------------------------------------------------------------------------------
 #from PhysicsTools.NanoAOD.common_cff import *
 process.load("PhysicsTools.NanoAOD.nano_cff")
-process.load("HCALPFG.HCALNano.hcaldigis_cff") # loads all modules
+process.load("HCALPFG.HcalNano.hcaldigitable_cff") # loads all modules
 
 
 process.nano_step = cms.Sequence(
@@ -125,7 +127,7 @@ process.nano_step = cms.Sequence(
 )
 
 #-----------------------------------------------------------------------------------
-# Path and EndPath definitions
+# Path and EtagQIE11ndPath definitions
 #-----------------------------------------------------------------------------------
 process.preparation = cms.Path(
     # Digis
@@ -141,7 +143,6 @@ process.preparation = cms.Path(
     process.hfprereco*
     process.hfreco*
     process.hbheprereco*
-    process.hbheplan1*
     process.hbhereco*
 
     ## Make the ntuples

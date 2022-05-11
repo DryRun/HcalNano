@@ -1,5 +1,5 @@
-#ifndef QIE11DigiTable_h
-#define QIE11DigiTable_h
+#ifndef QIE10DigiTable_h
+#define QIE10DigiTable_h
 
 #include <vector>
 #include <map>
@@ -16,7 +16,7 @@
 #include "DQM/HcalCommon/interface/Utilities.h"
 
 /*
-class QIE11Digi {
+class QIE10Digi {
 public:
     HcalDetId did;
 
@@ -38,7 +38,7 @@ public:
     std::vector<int>* tdc_;
     std::vector<int>* capID_;
 
-    inline QIE11Digi(QIE11DigiTable &table, unsigned int index) {
+    inline QIE10Digi(QIE10DigiTable &table, unsigned int index) {
         this.nTS_ = table.nTS_;
         this.did_ = table.dids_[index];
 
@@ -61,7 +61,7 @@ public:
 
     }
 
-    ~QIE11Digi();
+    ~QIE10Digi();
 
     inline void reset() {
         this.valid_ = false;
@@ -83,7 +83,7 @@ public:
 }
 */
 
-class QIE11DigiTable {
+class QIE10DigiTable {
 public:
     std::vector<HcalDetId> dids_;
 
@@ -93,7 +93,6 @@ public:
     std::vector<int> depths_;
     std::vector<int> rawIds_;
     std::vector<bool> linkErrors_;
-    std::vector<bool> capidErrors_;
     std::vector<int> flags_;
     std::vector<int> sois_;
     std::vector<bool> valids_;
@@ -103,15 +102,16 @@ public:
     std::vector<std::vector<float>> fcs_;
     std::vector<std::vector<float>> pedestalfcs_;
     std::vector<std::vector<int>> tdcs_;
+    //std::vector<std::vector<int>> tetdcs_;
     std::vector<std::vector<int>> capids_;
+    std::vector<std::vector<bool>> oks_;
 
-    QIE11DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS);
-    void add(const QIE11DataFrame* digi, const edm::ESHandle<HcalDbService>& dbService);
+    QIE10DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS);
+    void add(const QIE10DataFrame* digi, const edm::ESHandle<HcalDbService>& dbService);
     void reset();
 
 };
 
-typedef QIE11DigiTable HBDigiTable;
-typedef QIE11DigiTable HEDigiTable;
+typedef QIE10DigiTable HFDigiTable;
 
 #endif

@@ -33,6 +33,10 @@ options.register('outputFile',
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "Output file")
+options.register('nThreads', 
+                4, 
+                VarParsing.VarParsing.multiplicity.singleton, 
+                VarParsing.VarParsing.varType.int)
 
 options.parseArguments()
 
@@ -42,6 +46,7 @@ print(" skipEvents    =", options.skipEvents)
 print(" processEvents =", options.processEvents)
 print(" inputFiles    =", options.inputFiles)
 print(" outputFile    =", options.outputFile)
+print(" nThreads.     =", options.nThreads)
 print(" ")
 
 #------------------------------------------------------------------------------------
@@ -64,7 +69,8 @@ process.TFileService = cms.Service(
     "TFileService",
     fileName = cms.string(options.outputFile)
     )
-
+process.options.numberOfThreads=cms.untracked.uint32(options.nThreads)
+process.options.numberOfStreams=cms.untracked.uint32(0)
 #------------------------------------------------------------------------------------
 # import of standard configurations
 #------------------------------------------------------------------------------------

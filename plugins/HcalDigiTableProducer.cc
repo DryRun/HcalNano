@@ -29,12 +29,14 @@
 #include "DQM/HcalCommon/interface/Utilities.h"
 
 
-//#include "HCALPFG/HcalNano/interface/QIE10Digi.h"
-#include "HCALPFG/HcalNano/interface/QIE11DigiTable.h"
+#include "HCALPFG/HcalNano/interface/QIE10DigiTable.h"
+#include "HCALPFG/HcalNano/interface/QIE10DigiTable.h"
+#include "HCALPFG/HcalNano/interface/HODigiTable.h"
 
 class HcalDigiTableProducer : public edm::stream::EDProducer<> {
 private:
     std::map<HcalSubdetector, std::vector<HcalDetId> > dids_;
+    std::map<HcalSubdetector, std::vector<HcalElectronicsId> > eids_;
     static const std::vector<HcalSubdetector> subdets_;
     HcalElectronicsMap const *emap_;
     std::map<HcalSubdetector, unsigned int> nDigis_;
@@ -45,7 +47,7 @@ private:
     edm::InputTag tagQIE10_;
     edm::EDGetTokenT<QIE10DigiCollection> tokenQIE10_;
 
-    edm::InputTag tagHODigis_;
+    edm::InputTag tagHO_;
     edm::EDGetTokenT<HODigiCollection> tokenHO_;
 
     edm::ESGetToken<HcalDbService, HcalDbRecord> tokenHcalDbService_;
@@ -71,7 +73,7 @@ public:
 
     tokenQIE11_ = consumes<QIE11DigiCollection>(tagQIE11_);
     tokenHO_ = consumes<HODigiCollection>(tagHO_);
-    tokenQIE10_ = consumes<QIE10DigiCollection>(tagQIE10);
+    tokenQIE10_ = consumes<QIE10DigiCollection>(tagQIE10_);
 
   }
 

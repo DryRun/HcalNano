@@ -158,44 +158,44 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     // HB
     hbDigiTable->reset();
     for (QIE11DigiCollection::const_iterator itDigi = qie11Digis->begin(); itDigi != qie11Digis->end(); ++itDigi) {
-        const QIE11DataFrame* digi = static_cast<const QIE11DataFrame*>(itDigi);
-        HcalDetId const& did = digi->detid();
+        const QIE11DataFrame digi = static_cast<const QIE11DataFrame>(*itDigi);
+        HcalDetId const& did = digi.detid();
         if (did.subdet() != HcalBarrel) continue;
 
-        hbDigiTable->add(digi, dbService_);
+        hbDigiTable->add(&digi, dbService_);
     } // End loop over qie11 HB digis
 
 
     // HE
     heDigiTable->reset();
     for (QIE11DigiCollection::const_iterator itDigi = qie11Digis->begin(); itDigi != qie11Digis->end(); ++itDigi) {
-        const QIE11DataFrame* digi = static_cast<const QIE11DataFrame*>(&*itDigi);
-        HcalDetId const& did = digi->detid();
+        const QIE11DataFrame digi = static_cast<const QIE11DataFrame>(*itDigi);
+        HcalDetId const& did = digi.detid();
         if (did.subdet() != HcalEndcap) continue;
 
-        heDigiTable->add(digi, dbService_);
+        heDigiTable->add(&digi, dbService_);
     } // End loop over qie11 HE digis
 
 
     // HF
     hfDigiTable->reset();
     for (QIE10DigiCollection::const_iterator itDigi = qie10Digis->begin(); itDigi != qie10Digis->end(); ++itDigi) {
-        const QIE10DataFrame* digi = static_cast<const QIE10DataFrame*>(&*itDigi);
-        HcalDetId const& did = digi->detid();
+        const QIE10DataFrame digi = static_cast<const QIE10DataFrame>(*itDigi);
+        HcalDetId const& did = digi.detid();
         if (did.subdet() != HcalForward) continue;
 
-        hfDigiTable->add(digi, dbService_);
+        hfDigiTable->add(&digi, dbService_);
     } // End loop over qie10 HF digis
 
 
     // HO
     hoDigiTable->reset();
     for (HODigiCollection::const_iterator itDigi = hoDigis->begin(); itDigi != hoDigis->end(); ++itDigi) {
-        const HODataFrame* digi = static_cast<const HODataFrame*>(&*itDigi);
-        HcalDetId const& did = digi->id();
+        const HODataFrame digi = static_cast<const HODataFrame>(*itDigi);
+        HcalDetId const& did = digi.id();
         if (did.subdet() != HcalOuter) continue;
 
-        hoDigiTable->add(digi, dbService_);
+        hoDigiTable->add(&digi, dbService_);
     } // End loop over HO digis
 
 

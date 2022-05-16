@@ -45,7 +45,6 @@ void HODigiTable::add(const HODataFrame* digi, const edm::ESHandle<HcalDbService
     sois_[index] = digi->presamples();
 
     for (unsigned int iTS = 0; iTS < (unsigned int)digi->size(); ++iTS) {
-
         adcs_[iTS][index]        = digi->sample(iTS).adc();
         //tdcs_[iTS][index]        = digi->sample(iTS).le_tdc();
         //tetdcs_[iTS][index]    = digi->sample(iTS).te_tdc();

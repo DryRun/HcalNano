@@ -277,7 +277,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     hfNanoTable->addColumn<int>("soi", hfDigiTable->sois_, "soi");
     hfNanoTable->addColumn<bool>("valid", hfDigiTable->valids_, "valid");
 
-    for (unsigned int iTS = 0; iTS < 8; ++iTS) {
+    for (unsigned int iTS = 0; iTS < 3; ++iTS) {
         hfNanoTable->addColumn<int>(std::string("adc") + std::to_string(iTS), 
                                         hfDigiTable->adcs_[iTS], 
                                         std::string("adc") + std::to_string(iTS));
@@ -314,7 +314,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     hoNanoTable->addColumn<int>("soi", hoDigiTable->sois_, "soi");
     hoNanoTable->addColumn<bool>("valid", hoDigiTable->valids_, "valid");
 
-    for (unsigned int iTS = 0; iTS < 8; ++iTS) {
+    for (unsigned int iTS = 0; iTS < 10; ++iTS) {
         hoNanoTable->addColumn<int>(std::string("adc") + std::to_string(iTS), 
                                         hoDigiTable->adcs_[iTS], 
                                         std::string("adc") + std::to_string(iTS));

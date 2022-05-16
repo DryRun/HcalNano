@@ -58,7 +58,6 @@ void QIE10DigiTable::add(const QIE10DataFrame* digi, const edm::ESHandle<HcalDbS
     valids_[index] = true;
 }
 
-cd
 void QIE10DigiTable::reset() {
     std::fill(ietas_.begin(), ietas_.end(), 0);
     std::fill(iphis_.begin(), iphis_.end(), 0);

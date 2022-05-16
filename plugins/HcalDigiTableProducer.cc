@@ -234,7 +234,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
                                         hbDigiTable->pedestalfcs_[iTS], 
                                         std::string("pedestalfc") + std::to_string(iTS));
     }
-    iEvent.put(std::move(hbNanoTable));
+    iEvent.put(std::move(hbNanoTable), "HB");
 
     // HE
     auto heNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalEndcap], "HEDigis", false, false);
@@ -266,7 +266,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
                                         heDigiTable->pedestalfcs_[iTS], 
                                         std::string("pedestalfc") + std::to_string(iTS));
     }
-    iEvent.put(std::move(heNanoTable));
+    iEvent.put(std::move(heNanoTable), "HE");
 
     // HF
     auto hfNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalForward], "HFDigis", false, false);
@@ -303,7 +303,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
                                         hfDigiTable->oks_[iTS], 
                                         std::string("ok") + std::to_string(iTS));
     }
-    iEvent.put(std::move(hfNanoTable));
+    iEvent.put(std::move(hfNanoTable), "HF");
 
 
     // HO
@@ -343,7 +343,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
                                         hoDigiTable->ers_[iTS], 
                                         std::string("er") + std::to_string(iTS));
     }
-    iEvent.put(std::move(hoNanoTable));
+    iEvent.put(std::move(hoNanoTable), "HO");
 
 }
 

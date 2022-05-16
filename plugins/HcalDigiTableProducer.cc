@@ -275,7 +275,6 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     hfNanoTable->addColumn<bool>("linkError", hfDigiTable->linkErrors_, "linkError");
     hfNanoTable->addColumn<int>("flags", hfDigiTable->flags_, "flags");
     hfNanoTable->addColumn<int>("soi", hfDigiTable->sois_, "soi");
-    hfNanoTable->addColumn<bool>("ok", hfDigiTable->oks_, "ok");
     hfNanoTable->addColumn<bool>("valid", hfDigiTable->valids_, "valid");
 
     for (unsigned int iTS = 0; iTS < 8; ++iTS) {
@@ -297,6 +296,9 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
         hfNanoTable->addColumn<float>(std::string("pedestalfc") + std::to_string(iTS), 
                                         hfDigiTable->pedestalfcs_[iTS], 
                                         std::string("pedestalfc") + std::to_string(iTS));
+        hfNanoTable->addColumn<float>(std::string("ok") + std::to_string(iTS), 
+                                        hfDigiTable->oks_[iTS], 
+                                        std::string("ok") + std::to_string(iTS));
     }
     iEvent.put(std::move(hfNanoTable));
 

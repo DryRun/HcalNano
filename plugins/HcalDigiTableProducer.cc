@@ -29,7 +29,7 @@
 #include "DQM/HcalCommon/interface/Utilities.h"
 
 
-#include "HCALPFG/HcalNano/interface/QIE10DigiTable.h"
+#include "HCALPFG/HcalNano/interface/QIE11DigiTable.h"
 #include "HCALPFG/HcalNano/interface/QIE10DigiTable.h"
 #include "HCALPFG/HcalNano/interface/HODigiTable.h"
 
@@ -79,6 +79,9 @@ public:
 
     ~HcalDigiTableProducer() {
         delete hbDigiTable;
+        delete heDigiTable;
+        delete hfDigiTable;
+        delete hoDigiTable;
     };
 
     /*

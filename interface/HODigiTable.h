@@ -45,6 +45,4 @@ public:
 
 };
 
-typedef HODigiTable HFDigiTable;
-
 #endif

@@ -303,14 +303,14 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 
     // HO
     auto hoNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalOuter], "HODigis", false, false);
-    hoNanoTable->addColumn<int>("rawId", hfDigiTable->rawIds_, "rawId");
-    hoNanoTable->addColumn<int>("ieta", hfDigiTable->ietas_, "ieta");
-    hoNanoTable->addColumn<int>("iphi", hfDigiTable->iphis_, "iphi");
-    hoNanoTable->addColumn<int>("depth", hfDigiTable->depths_, "depth");
-    hoNanoTable->addColumn<int>("subdet", hfDigiTable->subdets_, "subdet");
-    hoNanoTable->addColumn<int>("fiberIdleOffset", hfDigiTable->fiberIdleOffsets_, "fiberIdleOffset");
-    hoNanoTable->addColumn<int>("soi", hfDigiTable->sois_, "soi");
-    hoNanoTable->addColumn<bool>("valid", hfDigiTable->valids_, "valid");
+    hoNanoTable->addColumn<int>("rawId", hoDigiTable->rawIds_, "rawId");
+    hoNanoTable->addColumn<int>("ieta", hoDigiTable->ietas_, "ieta");
+    hoNanoTable->addColumn<int>("iphi", hoDigiTable->iphis_, "iphi");
+    hoNanoTable->addColumn<int>("depth", hoDigiTable->depths_, "depth");
+    hoNanoTable->addColumn<int>("subdet", hoDigiTable->subdets_, "subdet");
+    hoNanoTable->addColumn<int>("fiberIdleOffset", hoDigiTable->fiberIdleOffsets_, "fiberIdleOffset");
+    hoNanoTable->addColumn<int>("soi", hoDigiTable->sois_, "soi");
+    hoNanoTable->addColumn<bool>("valid", hoDigiTable->valids_, "valid");
 
     for (unsigned int iTS = 0; iTS < 8; ++iTS) {
         hoNanoTable->addColumn<int>(std::string("adc") + std::to_string(iTS), 

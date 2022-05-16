@@ -126,7 +126,7 @@ void HcalDigiTableProducer::beginRun(edm::Run const& iRun, edm::EventSetup const
     // Save EIDs
     for (auto& it_subdet : subdets_) {
         for (auto it_did : dids_[it_subdet]) {
-            eids_[it_subdet].push_back(HcalElectronicsId(it_did.rawId()))
+            eids_[it_subdet].push_back(HcalElectronicsId(it_did.rawId()));
         }
     }
 
@@ -152,46 +152,46 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     // * Process digis */
     // HB
     hbDigiTable->reset();
-    for (QIE11DigiCollection::const_iterator inputDigi = qie11Digis->begin(); inputDigi != qie11Digis->end(); ++inputDigi) {
-        //const QIE11DataFrame inputDigi = static_cast<const QIE11DataFrame*>(it_rawdigi);
-        HcalDetId const& did = inputDigi->detid();
+    for (QIE11DigiCollection::const_iterator itDigi = qie11Digis->begin(); itDigi != qie11Digis->end(); ++itDigi) {
+        const QIE11DataFrame* digi = static_cast<const QIE11DataFrame*>(itDigi);
+        HcalDetId const& did = digi->detid();
         if (did.subdet() != HcalBarrel) continue;
 
-        hbDigiTable->add(inputDigi, dbService_);
+        hbDigiTable->add(digi, dbService_);
     } // End loop over qie11 HB digis
 
 
     // HE
     heDigiTable->reset();
-    for (QIE11DigiCollection::const_iterator inputDigi = qie11Digis->begin(); inputDigi != qie11Digis->end(); ++inputDigi) {
-        //const QIE11DataFrame inputDigi = static_cast<const QIE11DataFrame*>(it_rawdigi);
-        HcalDetId const& did = inputDigi->detid();
+    for (QIE11DigiCollection::const_iterator itDigi = qie11Digis->begin(); itDigi != qie11Digis->end(); ++itDigi) {
+        const QIE11DataFrame* digi = static_cast<const QIE11DataFrame*>(itDigi);
+        HcalDetId const& did = digi->detid();
         if (did.subdet() != HcalEndcap) continue;
 
-        heDigiTable->add(inputDigi, dbService_);
+        heDigiTable->add(digi, dbService_);
     } // End loop over qie11 HE digis
 
 
     // HF
     hfDigiTable->reset();
-    for (QIE10DigiCollection::const_iterator inputDigi = qie10Digis->begin(); inputDigi != qie10Digis->end(); ++inputDigi) {
-        //const QIE10DataFrame inputDigi = static_cast<const QIE10DataFrame*>(it_rawdigi);
-        HcalDetId const& did = inputDigi->detid();
+    for (QIE10DigiCollection::const_iterator itDigi = qie10Digis->begin(); itDigi != qie10Digis->end(); ++itDigi) {
+        const QIE10DataFrame* digi = static_cast<const QIE10DataFrame*>(itDigi);
+        HcalDetId const& did = digi->detid();
         if (did.subdet() != HcalForward) continue;
 
-        hfDigiTable->add(inputDigi, dbService_);
+        hfDigiTable->add(digi, dbService_);
     } // End loop over qie10 HF digis
 
 
     // HO
     hoDigiTable->reset();
-    for (HODigiCollection::const_iterator inputDigi = hoDigis->begin(); inputDigi != hoDigis->end(); ++inputDigi) {
-        //const HODataFrame inputDigi = static_cast<const HODataFrame*>(it_rawdigi);
-        HcalDetId const& did = inputDigi->id();
+    for (HODigiCollection::const_iterator itDigi = hoDigis->begin(); itDigi != hoDigis->end(); ++itDigi) {
+        const HODataFrame* digi = static_cast<const HODataFrame*>(itDigi);
+        HcalDetId const& did = digi->id();
         if (did.subdet() != HcalOuter) continue;
 
-        hoDigiTable->add(inputDigi, dbService_);
-    } // End loop over qie10 HF digis
+        hoDigiTable->add(digi, dbService_);
+    } // End loop over HO digis
 
 
     // * Save to NanoAOD tables */
@@ -261,7 +261,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     iEvent.put(std::move(heNanoTable));
 
     // HF
-    auto hfNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalEndcap], "HFDigis", false, false);
+    auto hfNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalForward], "HFDigis", false, false);
     hfNanoTable->addColumn<int>("rawId", hfDigiTable->rawIds_, "rawId");
     hfNanoTable->addColumn<int>("ieta", hfDigiTable->ietas_, "ieta");
     hfNanoTable->addColumn<int>("iphi", hfDigiTable->iphis_, "iphi");
@@ -297,7 +297,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 
 
     // HO
-    auto hoNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalEndcap], "HODigis", false, false);
+    auto hoNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalOuter], "HODigis", false, false);
     hoNanoTable->addColumn<int>("rawId", hfDigiTable->rawIds_, "rawId");
     hoNanoTable->addColumn<int>("ieta", hfDigiTable->ietas_, "ieta");
     hoNanoTable->addColumn<int>("iphi", hfDigiTable->iphis_, "iphi");
@@ -309,28 +309,28 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 
     for (unsigned int iTS = 0; iTS < 8; ++iTS) {
         hoNanoTable->addColumn<int>(std::string("adc") + std::to_string(iTS), 
-                                        hfDigiTable->adcs_[iTS], 
+                                        hoDigiTable->adcs_[iTS], 
                                         std::string("adc") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("capid") + std::to_string(iTS), 
-                                        hfDigiTable->capids_[iTS], 
+                                        hoDigiTable->capids_[iTS], 
                                         std::string("capid") + std::to_string(iTS));
         hoNanoTable->addColumn<float>(std::string("fc") + std::to_string(iTS), 
-                                        hfDigiTable->fcs_[iTS], 
+                                        hoDigiTable->fcs_[iTS], 
                                         std::string("fc") + std::to_string(iTS));
         hoNanoTable->addColumn<float>(std::string("pedestalfc") + std::to_string(iTS), 
-                                        hfDigiTable->pedestalfcs_[iTS], 
+                                        hoDigiTable->pedestalfcs_[iTS], 
                                         std::string("pedestalfc") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("fiber") + std::to_string(iTS), 
-                                        hfDigiTable->fibers_[iTS], 
+                                        hoDigiTable->fibers_[iTS], 
                                         std::string("fiber") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("fiberChan") + std::to_string(iTS), 
-                                        hfDigiTable->fiberChans_[iTS], 
+                                        hoDigiTable->fiberChans_[iTS], 
                                         std::string("fiberChan") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("dv") + std::to_string(iTS), 
-                                        hfDigiTable->dvs_[iTS], 
+                                        hoDigiTable->dvs_[iTS], 
                                         std::string("dv") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("er") + std::to_string(iTS), 
-                                        hfDigiTable->ers_[iTS], 
+                                        hoDigiTable->ers_[iTS], 
                                         std::string("er") + std::to_string(iTS));
     }
     iEvent.put(std::move(hoNanoTable));

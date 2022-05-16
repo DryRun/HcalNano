@@ -47,7 +47,7 @@ void QIE10DigiTable::add(const QIE10DataFrame* digi, const edm::ESHandle<HcalDbS
         if ((*digi)[iTS].soi()) {
             sois_[index] = iTS;
         }
-        oks_[iTS][index]         = (*digi)[iTS].ok()
+        oks_[iTS][index]         = (*digi)[iTS].ok();
         adcs_[iTS][index]        = (*digi)[iTS].adc();
         tdcs_[iTS][index]        = (*digi)[iTS].le_tdc();
         //tetdcs_[iTS][index]    = (*digi)[iTS].te_tdc();

@@ -169,7 +169,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     // HE
     heDigiTable->reset();
     for (QIE11DigiCollection::const_iterator itDigi = qie11Digis->begin(); itDigi != qie11Digis->end(); ++itDigi) {
-        const QIE11DataFrame* digi = static_cast<const QIE11DataFrame*>(itDigi);
+        const QIE11DataFrame* digi = static_cast<const QIE11DataFrame*>(&*itDigi);
         HcalDetId const& did = digi->detid();
         if (did.subdet() != HcalEndcap) continue;
 
@@ -180,7 +180,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     // HF
     hfDigiTable->reset();
     for (QIE10DigiCollection::const_iterator itDigi = qie10Digis->begin(); itDigi != qie10Digis->end(); ++itDigi) {
-        const QIE10DataFrame* digi = static_cast<const QIE10DataFrame*>(itDigi);
+        const QIE10DataFrame* digi = static_cast<const QIE10DataFrame*>(&*itDigi);
         HcalDetId const& did = digi->detid();
         if (did.subdet() != HcalForward) continue;
 
@@ -191,7 +191,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     // HO
     hoDigiTable->reset();
     for (HODigiCollection::const_iterator itDigi = hoDigis->begin(); itDigi != hoDigis->end(); ++itDigi) {
-        const HODataFrame* digi = static_cast<const HODataFrame*>(itDigi);
+        const HODataFrame* digi = static_cast<const HODataFrame*>(&*itDigi);
         HcalDetId const& did = digi->id();
         if (did.subdet() != HcalOuter) continue;
 

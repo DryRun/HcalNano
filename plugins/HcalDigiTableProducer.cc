@@ -65,7 +65,10 @@ public:
     tagHO_(iConfig.getUntrackedParameter<edm::InputTag>("tagHO", edm::InputTag("hcalDigis"))), 
     tokenHcalDbService_(esConsumes<HcalDbService, HcalDbRecord, edm::Transition::BeginRun>())
     {
-    produces<nanoaod::FlatTable>();
+    produces<nanoaod::FlatTable>("HB");
+    produces<nanoaod::FlatTable>("HE");
+    produces<nanoaod::FlatTable>("HF");
+    produces<nanoaod::FlatTable>("HO");
 
     //tagQIE11_ = iConfig.getUntrackedParameter<edm::InputTag>("tagQIE11", edm::InputTag("hcalDigis"));
     //tagHO_ = iConfig.getUntrackedParameter<edm::InputTag>("tagHO", edm::InputTag("hcalDigis"));

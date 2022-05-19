@@ -7,10 +7,16 @@ scram project -n "CMSSW_12_3_0_HcalNano" CMSSW_12_3_0
 cd CMSSW_12_3_0_HcalNano/src
 cmsenv
 git cms-init
+
+## If you want ZSTD or LZ4 compression
+# git cms-rebase-topic DryRun:CMSSW_12_3_0-nanocompression
+
 git clone git@github.com:HCALPFG/HcalNano.git HCALPFG/HcalNano
+
 ## Optional, if you want to study or modify NanoAOD in some way:
 # git cms-addpkg PhysicsTools/NanoAOD
 # git cms-addpkg DataFormats/NanoAOD
+
 scram b -j8
 ```
 

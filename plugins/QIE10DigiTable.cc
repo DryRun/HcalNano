@@ -2,6 +2,9 @@
 
 QIE10DigiTable::QIE10DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
     dids_ = _dids;
+    for (std::vector<HcalDetId>::const_iterator it_did = dids_.begin(); it_did != dids_.end(); ++it_did) {
+        did_indexmap_[*it_did] = (unsigned int)(it_did - dids_.begin());
+    }
 
     nTS_ = _nTS;
     ietas_.resize(dids_.size());
@@ -26,11 +29,11 @@ QIE10DigiTable::QIE10DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS)
 
 void QIE10DigiTable::add(const QIE10DataFrame* digi, const edm::ESHandle<HcalDbService>& dbService) {
     HcalDetId did = digi->detid();
-    unsigned int index = std::find(dids_.begin(), dids_.end(), did) - dids_.begin();
-    if (index == (dids_.end() - dids_.begin())) {
-        std::cerr << "[QIE10DigiTable] ERROR : Didn't find did " << did << " in table" << std::endl;
-        exit(1);
-    }
+    unsigned int index = did_indexmap_.at(did);//std::find(dids_.begin(), dids_.end(), did) - dids_.begin();
+    //if (index == dids_.size()) {
+    //    std::cerr << "[QIE10DigiTable] ERROR : Didn't find did " << did << " in table" << std::endl;
+    //    exit(1);
+    //}
 
     CaloSamples digiCaloSamples = hcaldqm::utilities::loadADC2fCDB<QIE10DataFrame>(dbService, did, *digi);
     HcalCalibrations calibrations = dbService->getHcalCalibrations(did);

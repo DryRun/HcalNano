@@ -86,6 +86,7 @@ public:
 class QIE11DigiTable {
 public:
     std::vector<HcalDetId> dids_;
+    std::map<HcalDetId, unsigned int> did_indexmap_; // Use std::map for efficient lookup, rather than std::find
 
     std::vector<int> ietas_;
     std::vector<int> iphis_;

@@ -2,6 +2,9 @@
 
 HODigiTable::HODigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
     dids_ = _dids;
+    for (std::vector<HcalDetId>::const_iterator it_did = dids_.begin(); it_did != dids_.end(); ++it_did) {
+        did_indexmap_[*it_did] = (unsigned int)(it_did - dids_.begin());
+    }
 
     nTS_ = _nTS;
 
@@ -27,11 +30,11 @@ HODigiTable::HODigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
 
 void HODigiTable::add(const HODataFrame* digi, const edm::ESHandle<HcalDbService>& dbService) {
     HcalDetId did = digi->id();
-    unsigned int index = std::find(dids_.begin(), dids_.end(), did) - dids_.begin();
-    if (index == (dids_.end() - dids_.begin())) {
-        std::cerr << "[HODigiTable] ERROR : Didn't find did " << did << " in table" << std::endl;
-        exit(1);
-    }
+    unsigned int index = did_indexmap_.at(did);//std::find(dids_.begin(), dids_.end(), did) - dids_.begin();
+    //if (index == dids_.size()) {
+    //    std::cerr << "[HODigiTable] ERROR : Didn't find did " << did << " in table" << std::endl;
+    //    exit(1);
+    //}
 
     CaloSamples digiCaloSamples = hcaldqm::utilities::loadADC2fCDB<HODataFrame>(dbService, did, *digi);
     HcalCalibrations calibrations = dbService->getHcalCalibrations(did);

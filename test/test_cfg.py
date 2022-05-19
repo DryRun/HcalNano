@@ -33,7 +33,18 @@ options.register('outputFile',
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "Output file")
+
 options.register('nThreads', 
+                4, 
+                VarParsing.VarParsing.multiplicity.singleton, 
+                VarParsing.VarParsing.varType.int)
+
+options.register('compressionAlgorithm', 
+                "ZLIB", 
+                VarParsing.VarParsing.multiplicity.singleton, 
+                VarParsing.VarParsing.varType.string)
+
+options.register('compressionLevel', 
                 4, 
                 VarParsing.VarParsing.multiplicity.singleton, 
                 VarParsing.VarParsing.varType.int)
@@ -128,39 +139,43 @@ process.load("PhysicsTools.NanoAOD.nano_cff")
 process.load("HCALPFG.HcalNano.hcaldigitable_cff") # loads all modules
 
 
-process.nano_step = cms.Sequence(
-    process.hcalDigiTable
-)
+#process.nano_step = cms.Sequence(
+#    process.hcalDigiTable
+#)
 
 #-----------------------------------------------------------------------------------
 # Path and EtagQIE11ndPath definitions
 #-----------------------------------------------------------------------------------
-process.preparation = cms.Path(
-    # Digis
-    process.hcalDigis*
-
-    ## reconstruction
-    process.L1Reco*
-    process.reconstruction*
-    process.hcalLocalRecoSequence*
-
-    ## Do energy reconstruction
-    process.horeco*
-    process.hfprereco*
-    process.hfreco*
-    process.hbheprereco*
-    process.hbhereco*
-
-    ## Make the ntuples
-    process.nano_step
-)
+process.hcalNanoTask = cms.Task(
+    process.hcalDigis, 
+    process.hcalDigiTable)
+process.preparation = cms.Path(process.hcalNanoTask)
+#process.preparation = cms.Path(
+#    # Digis
+#    process.hcalDigis
+#
+#    ## reconstruction
+#    #* process.L1Reco
+#    #* process.reconstruction
+#    #* process.hcalLocalRecoSequence
+#
+#    ### Do energy reconstruction
+#    #* process.horeco
+#    #* process.hfprereco
+#    #* process.hfreco
+#    #* process.hbheprereco
+#    #* process.hbhereco
+#
+#    ## Make the ntuples
+#    * process.nano_step
+#)
 
 
 process.out = cms.OutputModule("NanoAODOutputModule",
-    fileName = cms.untracked.string('hcalnano.root'),
+    fileName = cms.untracked.string(options.outputFile),
     outputCommands = process.NanoAODEDMEventContent.outputCommands,
-    compressionLevel = cms.untracked.int32(9),
-    compressionAlgorithm = cms.untracked.string("LZMA"),
+    compressionLevel = cms.untracked.int32(options.compressionLevel),
+    compressionAlgorithm = cms.untracked.string(options.compressionAlgorithm),
 
 )
 process.end = cms.EndPath(process.out)  

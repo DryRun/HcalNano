@@ -2,6 +2,9 @@
 
 QIE11DigiTable::QIE11DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
     dids_ = _dids;
+    for (std::vector<HcalDetId>::const_iterator it_did = dids_.begin(); it_did != dids_.end(); ++it_did) {
+        did_indexmap_[*it_did] = (unsigned int)(it_did - dids_.begin());
+    }
 
     nTS_ = _nTS;
     ietas_.resize(dids_.size());
@@ -24,11 +27,11 @@ QIE11DigiTable::QIE11DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS)
 
 void QIE11DigiTable::add(const QIE11DataFrame* digi, const edm::ESHandle<HcalDbService>& dbService) {
     HcalDetId did = digi->detid();
-    unsigned int index = std::find(dids_.begin(), dids_.end(), did) - dids_.begin();
-    if (index == (dids_.end() - dids_.begin())) {
-        std::cerr << "[QIE11DigiTable] ERROR : Didn't find did " << did << " in table" << std::endl;
-        exit(1);
-    }
+    unsigned int index = did_indexmap_.at(did);//std::find(dids_.begin(), dids_.end(), did) - dids_.begin();
+    //if (index == dids_.size()) {
+    //    std::cerr << "[QIE11DigiTable] ERROR : Didn't find did " << did << " in table" << std::endl;
+    //    exit(1);
+    //}
 
     CaloSamples digiCaloSamples = hcaldqm::utilities::loadADC2fCDB<QIE11DataFrame>(dbService, did, *digi);
     HcalCalibrations calibrations = dbService->getHcalCalibrations(did);
@@ -68,13 +71,28 @@ void QIE11DigiTable::reset() {
     std::fill(sois_.begin(), sois_.end(), 0);
     std::fill(valids_.begin(), valids_.end(), false);
 
-    for (unsigned int i = 0; i < nTS_; ++i) {
-        for (unsigned int j = 0; j < dids_.size(); ++j) {
-            adcs_[i][j] = 0;
-            fcs_[i][j] = 0.;
-            pedestalfcs_[i][j] = 0.;
-            tdcs_[i][j] = 0;
-            capids_[i][j] = 0;
-        }
+    for (auto& it : adcs_) {
+        std::fill(it.begin(), it.end(), 0);
     }
+    for (auto& it : fcs_) {
+        std::fill(it.begin(), it.end(), 0);
+    }
+    for (auto& it : pedestalfcs_) {
+        std::fill(it.begin(), it.end(), 0);
+    }
+    for (auto& it : tdcs_) {
+        std::fill(it.begin(), it.end(), 0);
+    }
+    for (auto& it : capids_) {
+        std::fill(it.begin(), it.end(), 0);
+    }
+    //for (unsigned int i = 0; i < nTS_; ++i) {
+    //    for (unsigned int j = 0; j < dids_.size(); ++j) {
+    //        adcs_[i][j] = 0;
+    //        fcs_[i][j] = 0.;
+    //        pedestalfcs_[i][j] = 0.;
+    //        tdcs_[i][j] = 0;
+    //        capids_[i][j] = 0;
+    //    }
+    //}
 }

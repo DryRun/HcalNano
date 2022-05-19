@@ -1,5 +1,5 @@
 # HcalNano
-An EDM analyer for analyzing HCAL digis and RecHits. This supercedes https://github.com/HCALPFG/HcalTupleMaker, replacing the custom output module with CMSSW NanoAODOutputModule. 
+An EDM analyer for analyzing HCAL digis and RecHits. This supersedes https://github.com/HCALPFG/HcalTupleMaker, replacing the custom output module with CMSSW NanoAODOutputModule. 
 
 Setup instructions:
 ```

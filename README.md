@@ -12,10 +12,11 @@ git cms-init
 # git cms-rebase-topic DryRun:CMSSW_12_3_0-nanocompression
 
 git clone git@github.com:HCALPFG/HcalNano.git HCALPFG/HcalNano
+git clone git@github.com:HCALPFG/HcalNanoDF.git DataFormats/HcalNano
 
 ## Optional, if you want to study or modify NanoAOD in some way:
-# git cms-addpkg PhysicsTools/NanoAOD
-# git cms-addpkg DataFormats/NanoAOD
+git cms-addpkg PhysicsTools/NanoAOD
+git cms-addpkg DataFormats/NanoAOD
 
 scram b -j8
 ```

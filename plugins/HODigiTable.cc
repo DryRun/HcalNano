@@ -1,6 +1,6 @@
 #include "HCALPFG/HcalNano/interface/HODigiTable.h"
 
-HODigiTable::HODigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
+hcalnano::HODigiTable::HODigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
     dids_ = _dids;
     for (std::vector<HcalDetId>::const_iterator it_did = dids_.begin(); it_did != dids_.end(); ++it_did) {
         did_indexmap_[*it_did] = (unsigned int)(it_did - dids_.begin());
@@ -28,7 +28,7 @@ HODigiTable::HODigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
 
 }
 
-void HODigiTable::add(const HODataFrame* digi, const edm::ESHandle<HcalDbService>& dbService) {
+void hcalnano::HODigiTable::add(const HODataFrame* digi, const edm::ESHandle<HcalDbService>& dbService) {
     HcalDetId did = digi->id();
     unsigned int index = did_indexmap_.at(did);//std::find(dids_.begin(), dids_.end(), did) - dids_.begin();
     //if (index == dids_.size()) {
@@ -61,7 +61,7 @@ void HODigiTable::add(const HODataFrame* digi, const edm::ESHandle<HcalDbService
 }
 
 
-void HODigiTable::reset() {
+void hcalnano::HODigiTable::reset() {
     std::fill(ietas_.begin(), ietas_.end(), 0);
     std::fill(iphis_.begin(), iphis_.end(), -100);
     std::fill(subdets_.begin(), subdets_.end(), -1);

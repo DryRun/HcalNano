@@ -1,6 +1,6 @@
 #include "HCALPFG/HcalNano/interface/QIE11DigiTable.h"
 
-QIE11DigiTable::QIE11DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
+hcalnano::QIE11DigiTable::QIE11DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS) {
     dids_ = _dids;
     for (std::vector<HcalDetId>::const_iterator it_did = dids_.begin(); it_did != dids_.end(); ++it_did) {
         did_indexmap_[*it_did] = (unsigned int)(it_did - dids_.begin());
@@ -25,7 +25,7 @@ QIE11DigiTable::QIE11DigiTable(std::vector<HcalDetId>& _dids, unsigned int _nTS)
     capids_.resize(nTS_, std::vector<int>(dids_.size()));
 }
 
-void QIE11DigiTable::add(const QIE11DataFrame* digi, const edm::ESHandle<HcalDbService>& dbService) {
+void hcalnano::QIE11DigiTable::add(const QIE11DataFrame* digi, const edm::ESHandle<HcalDbService>& dbService) {
     HcalDetId did = digi->detid();
     unsigned int index = did_indexmap_.at(did);//std::find(dids_.begin(), dids_.end(), did) - dids_.begin();
     //if (index == dids_.size()) {
@@ -59,7 +59,7 @@ void QIE11DigiTable::add(const QIE11DataFrame* digi, const edm::ESHandle<HcalDbS
 }
 
 
-void QIE11DigiTable::reset() {
+void hcalnano::QIE11DigiTable::reset() {
     std::fill(ietas_.begin(), ietas_.end(), 0);
     std::fill(iphis_.begin(), iphis_.end(), 0);
     std::fill(subdets_.begin(), subdets_.end(), 0);

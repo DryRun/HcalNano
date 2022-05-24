@@ -32,121 +32,113 @@
 #include "HCALPFG/HcalNano/interface/QIE11DigiTable.h"
 #include "HCALPFG/HcalNano/interface/QIE10DigiTable.h"
 #include "HCALPFG/HcalNano/interface/HODigiTable.h"
+#include "DataFormats/HcalNano/interface/HcalChannelInfo.h"
 
-class HcalDigiTableProducer : public edm::stream::EDProducer<> {
-private:
-    std::map<HcalSubdetector, std::vector<HcalDetId> > dids_;
-    std::map<HcalSubdetector, std::vector<HcalElectronicsId> > eids_;
-    static const std::vector<HcalSubdetector> subdets_;
-    HcalElectronicsMap const *emap_;
-    std::map<HcalSubdetector, unsigned int> nDigis_;
+namespace hcalnano {
+    class HcalDigiTableProducer : public edm::stream::EDProducer<> {
+    private:
+        std::map<HcalSubdetector, std::vector<HcalDetId> > dids_;
+        std::map<HcalSubdetector, std::vector<HcalElectronicsId> > eids_;
+        static const std::vector<HcalSubdetector> subdets_;
+        HcalElectronicsMap const *emap_;
 
-    edm::InputTag tagQIE11_;
-    edm::EDGetTokenT<QIE11DigiCollection> tokenQIE11_;
+        edm::InputTag tagChannelInfo_;
+        edm::EDGetTokenT<hcalnano::HcalChannelInfo> tokenChannelInfo_;
 
-    edm::InputTag tagQIE10_;
-    edm::EDGetTokenT<QIE10DigiCollection> tokenQIE10_;
+        edm::InputTag tagQIE11_;
+        edm::EDGetTokenT<QIE11DigiCollection> tokenQIE11_;
 
-    edm::InputTag tagHO_;
-    edm::EDGetTokenT<HODigiCollection> tokenHO_;
+        edm::InputTag tagQIE10_;
+        edm::EDGetTokenT<QIE10DigiCollection> tokenQIE10_;
 
-    edm::ESGetToken<HcalDbService, HcalDbRecord> tokenHcalDbService_;
-    edm::ESHandle<HcalDbService> dbService_;
+        edm::InputTag tagHO_;
+        edm::EDGetTokenT<HODigiCollection> tokenHO_;
 
-    HBDigiTable *hbDigiTable;
-    HEDigiTable *heDigiTable;
-    HFDigiTable *hfDigiTable;
-    HODigiTable *hoDigiTable;
 
-public:
-  explicit HcalDigiTableProducer(const edm::ParameterSet& iConfig) : 
-    tagQIE11_(iConfig.getUntrackedParameter<edm::InputTag>("tagQIE11", edm::InputTag("hcalDigis"))), 
-    tagQIE10_(iConfig.getUntrackedParameter<edm::InputTag>("tagQIE10", edm::InputTag("hcalDigis"))), 
-    tagHO_(iConfig.getUntrackedParameter<edm::InputTag>("tagHO", edm::InputTag("hcalDigis"))), 
-    tokenHcalDbService_(esConsumes<HcalDbService, HcalDbRecord, edm::Transition::BeginRun>())
-    {
-    produces<nanoaod::FlatTable>("HB");
-    produces<nanoaod::FlatTable>("HE");
-    produces<nanoaod::FlatTable>("HF");
-    produces<nanoaod::FlatTable>("HO");
+        edm::ESGetToken<HcalDbService, HcalDbRecord> tokenHcalDbService_;
+        edm::ESHandle<HcalDbService> dbService_;
 
-    //tagQIE11_ = iConfig.getUntrackedParameter<edm::InputTag>("tagQIE11", edm::InputTag("hcalDigis"));
-    //tagHO_ = iConfig.getUntrackedParameter<edm::InputTag>("tagHO", edm::InputTag("hcalDigis"));
-    //tagQIE10_ = iConfig.getUntrackedParameter<edm::InputTag>("tagHF", edm::InputTag("hcalDigis"));
 
-    tokenQIE11_ = consumes<QIE11DigiCollection>(tagQIE11_);
-    tokenHO_ = consumes<HODigiCollection>(tagHO_);
-    tokenQIE10_ = consumes<QIE10DigiCollection>(tagQIE10_);
+        hcalnano::HBDigiTable *hbDigiTable;
+        hcalnano::HEDigiTable *heDigiTable;
+        hcalnano::HFDigiTable *hfDigiTable;
+        hcalnano::HODigiTable *hoDigiTable;
 
-  }
+    public:
+      explicit HcalDigiTableProducer(const edm::ParameterSet& iConfig) : 
+        tokenChannelInfo_(consumes<edm::InRun>(iConfig.getUntrackedParameter<edm::InputTag>("tagChannelInfo", edm::InputTag("hcalChannelInfoTable")))),
+        //tagChannelInfo_(iConfig.getUntrackedParameter<edm::InputTag>("tagChannelInfo", edm::InputTag(""))), 
+        tagQIE11_(iConfig.getUntrackedParameter<edm::InputTag>("tagQIE11", edm::InputTag("hcalDigis"))), 
+        tagQIE10_(iConfig.getUntrackedParameter<edm::InputTag>("tagQIE10", edm::InputTag("hcalDigis"))), 
+        tagHO_(iConfig.getUntrackedParameter<edm::InputTag>("tagHO", edm::InputTag("hcalDigis"))), 
+        tokenHcalDbService_(esConsumes<HcalDbService, HcalDbRecord, edm::Transition::BeginRun>())
+        {
 
-    ~HcalDigiTableProducer() {
-        delete hbDigiTable;
-        delete heDigiTable;
-        delete hfDigiTable;
-        delete hoDigiTable;
+        //tokenChannelInfo_ = consumes<hcalnano::HcalChannelInfo, edm::InRun>(tagChannelInfo_);
+
+        tokenQIE11_ = consumes<QIE11DigiCollection>(tagQIE11_);
+        tokenHO_    = consumes<HODigiCollection>(tagHO_);
+        tokenQIE10_ = consumes<QIE10DigiCollection>(tagQIE10_);
+
+        produces<nanoaod::FlatTable>("HB");
+        produces<nanoaod::FlatTable>("HE");
+        produces<nanoaod::FlatTable>("HF");
+        produces<nanoaod::FlatTable>("HO");
+
+        //tagQIE11_ = iConfig.getUntrackedParameter<edm::InputTag>("tagQIE11", edm::InputTag("hcalDigis"));
+        //tagHO_ = iConfig.getUntrackedParameter<edm::InputTag>("tagHO", edm::InputTag("hcalDigis"));
+        //tagQIE10_ = iConfig.getUntrackedParameter<edm::InputTag>("tagHF", edm::InputTag("hcalDigis"));
+
+
+
+      }
+
+        ~HcalDigiTableProducer() {
+            delete hbDigiTable;
+            delete heDigiTable;
+            delete hfDigiTable;
+            delete hoDigiTable;
+        };
+
+        /*
+        static void fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+            edm::ParameterSetDescription desc;
+            desc.add<edm::InputTag>("tagQIE11")->setComment("Input QIE 11 digi collection");
+            // desc.add<std::string>("name")->setComment("");
+            descriptions.add("HcalDigiTable", desc);
+        }
+        */
+
+    private:
+        void beginRun(edm::Run const&, edm::EventSetup const&);
+        void produce(edm::Event&, edm::EventSetup const&) override;
+
     };
+}
 
-    /*
-    static void fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-        edm::ParameterSetDescription desc;
-        desc.add<edm::InputTag>("tagQIE11")->setComment("Input QIE 11 digi collection");
-        // desc.add<std::string>("name")->setComment("");
-        descriptions.add("HcalDigiTable", desc);
-    }
-    */
+const std::vector<HcalSubdetector> hcalnano::HcalDigiTableProducer::subdets_ = {HcalBarrel, HcalEndcap, HcalForward, HcalOuter};
 
-private:
-    void beginRun(edm::Run const&, edm::EventSetup const&);
-    void produce(edm::Event&, edm::EventSetup const&) override;
-
-};
-
-const std::vector<HcalSubdetector> HcalDigiTableProducer::subdets_ = {HcalBarrel, HcalEndcap, HcalForward, HcalOuter};
-
-void HcalDigiTableProducer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {
+void hcalnano::HcalDigiTableProducer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup) {
     // List DetIds of interest from emap
     dbService_ = iSetup.getHandle(tokenHcalDbService_);
     emap_ = dbService_->getHcalMapping();
 
-    std::vector<HcalGenericDetId> dids = emap_->allPrecisionId();
-    nDigis_[HcalBarrel] = 0;
-    nDigis_[HcalEndcap] = 0;
-    nDigis_[HcalForward] = 0;
-    nDigis_[HcalOuter] = 0;
-    for (auto it_did = dids.begin(); it_did != dids.end(); ++it_did) {
-        if (!it_did->isHcalDetId()) {
-            continue;
-        }
-        HcalDetId did = HcalDetId(it_did->rawId());
-        if (!(did.subdet() == HcalBarrel || did.subdet() == HcalEndcap || did.subdet() == HcalForward || did.subdet() == HcalOuter)) {
-            continue;
-        }
-        dids_[did.subdet()].push_back(did);
-        ++nDigis_[did.subdet()];
-    }
+    //std::vector<HcalGenericDetId> dids = emap_->allPrecisionId();
+    edm::Handle<hcalnano::HcalChannelInfo> channelInfo;
+    iRun.getByToken(tokenChannelInfo_, channelInfo);
 
-    // Sort HcalDetIds
-    for (auto& it_subdet : subdets_) {
-        std::sort(dids_[it_subdet].begin(), dids_[it_subdet].end());
-    }
-
-    // Save EIDs
-    for (auto& it_subdet : subdets_) {
-        for (auto it_did : dids_[it_subdet]) {
-            eids_[it_subdet].push_back(HcalElectronicsId(it_did.rawId()));
-        }
-    }
+    dids_ = channelInfo->dids;
+    eids_ = channelInfo->eids;
 
     // Create persistent digi storage
-    hbDigiTable = new HBDigiTable(dids_[HcalBarrel], 8);
-    heDigiTable = new HEDigiTable(dids_[HcalEndcap], 8);
-    hfDigiTable = new HFDigiTable(dids_[HcalForward], 3);
-    hoDigiTable = new HODigiTable(dids_[HcalOuter], 10);
+    hbDigiTable = new hcalnano::HBDigiTable(dids_[HcalBarrel], 8);
+    heDigiTable = new hcalnano::HEDigiTable(dids_[HcalEndcap], 8);
+    hfDigiTable = new hcalnano::HFDigiTable(dids_[HcalForward], 3);
+    hoDigiTable = new hcalnano::HODigiTable(dids_[HcalOuter], 10);
 }
 
 
-void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void hcalnano::HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // * Load digis */
     edm::Handle<QIE11DigiCollection> qie11Digis;
     iEvent.getByToken(tokenQIE11_, qie11Digis);
@@ -205,7 +197,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     // * Save to NanoAOD tables */
 
     // HB
-    auto hbNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalBarrel], "HBDigis", false, false);
+    auto hbNanoTable = std::make_unique<nanoaod::FlatTable>(dids_[HcalBarrel].size(), "HBDigis", false, false);
     hbNanoTable->addColumn<int>("rawId", hbDigiTable->rawIds_, "rawId");
     hbNanoTable->addColumn<int>("ieta", hbDigiTable->ietas_, "ieta");
     hbNanoTable->addColumn<int>("iphi", hbDigiTable->iphis_, "iphi");
@@ -237,7 +229,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     iEvent.put(std::move(hbNanoTable), "HB");
 
     // HE
-    auto heNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalEndcap], "HEDigis", false, false);
+    auto heNanoTable = std::make_unique<nanoaod::FlatTable>(dids_[HcalEndcap].size(), "HEDigis", false, false);
     heNanoTable->addColumn<int>("rawId", heDigiTable->rawIds_, "rawId");
     heNanoTable->addColumn<int>("ieta", heDigiTable->ietas_, "ieta");
     heNanoTable->addColumn<int>("iphi", heDigiTable->iphis_, "iphi");
@@ -269,7 +261,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
     iEvent.put(std::move(heNanoTable), "HE");
 
     // HF
-    auto hfNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalForward], "HFDigis", false, false);
+    auto hfNanoTable = std::make_unique<nanoaod::FlatTable>(dids_[HcalForward].size(), "HFDigis", false, false);
     hfNanoTable->addColumn<int>("rawId", hfDigiTable->rawIds_, "rawId");
     hfNanoTable->addColumn<int>("ieta", hfDigiTable->ietas_, "ieta");
     hfNanoTable->addColumn<int>("iphi", hfDigiTable->iphis_, "iphi");
@@ -307,7 +299,7 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 
 
     // HO
-    auto hoNanoTable = std::make_unique<nanoaod::FlatTable>(nDigis_[HcalOuter], "HODigis", false, false);
+    auto hoNanoTable = std::make_unique<nanoaod::FlatTable>(dids_[HcalOuter].size(), "HODigis", false, false);
     hoNanoTable->addColumn<int>("rawId", hoDigiTable->rawIds_, "rawId");
     hoNanoTable->addColumn<int>("ieta", hoDigiTable->ietas_, "ieta");
     hoNanoTable->addColumn<int>("iphi", hoDigiTable->iphis_, "iphi");
@@ -349,4 +341,4 @@ void HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 
 #include "FWCore/Framework/interface/MakerMacros.h"
 //define this as a plug-in
-DEFINE_FWK_MODULE(HcalDigiTableProducer);
+DEFINE_FWK_MODULE(hcalnano::HcalDigiTableProducer);

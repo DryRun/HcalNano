@@ -136,6 +136,7 @@ print(" ")
 #------------------------------------------------------------------------------------
 #from PhysicsTools.NanoAOD.common_cff import *
 process.load("PhysicsTools.NanoAOD.nano_cff")
+process.load("HCALPFG.HcalNano.hcalchannelinfotable_cff") # loads all modules
 process.load("HCALPFG.HcalNano.hcaldigitable_cff") # loads all modules
 
 
@@ -146,10 +147,14 @@ process.load("HCALPFG.HcalNano.hcaldigitable_cff") # loads all modules
 #-----------------------------------------------------------------------------------
 # Path and EtagQIE11ndPath definitions
 #-----------------------------------------------------------------------------------
+process.hcalNanoPrep = cms.Sequence(process.hcalChannelInfoTable)
+
 process.hcalNanoTask = cms.Task(
+    #process.hcalChannelInfoTable,
     process.hcalDigis, 
     process.hcalDigiTable)
-process.preparation = cms.Path(process.hcalNanoTask)
+
+process.preparation = cms.Path(process.hcalNanoPrep, process.hcalNanoTask)
 #process.preparation = cms.Path(
 #    # Digis
 #    process.hcalDigis
@@ -169,6 +174,15 @@ process.preparation = cms.Path(process.hcalNanoTask)
 #    ## Make the ntuples
 #    * process.nano_step
 #)
+process.NanoAODEDMEventContent.outputCommands = cms.untracked.vstring(
+        'drop *',
+        "keep nanoaodFlatTable_*Table_*_*",     # event data
+        "keep edmTriggerResults_*_*_*",  # event data
+        "keep String_*_genModel_*",  # generator model data
+        "keep nanoaodMergeableCounterTable_*Table_*_*", # accumulated per/run or per/lumi data
+        "keep nanoaodUniqueString_nanoMetadata_*_*",   # basic metadata
+
+    )
 
 
 process.out = cms.OutputModule("NanoAODOutputModule",

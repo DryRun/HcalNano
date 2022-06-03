@@ -38,7 +38,7 @@ namespace hcalnano {
     class HcalDigiTableProducer : public edm::stream::EDProducer<> {
     private:
         std::map<HcalSubdetector, std::vector<HcalDetId> > dids_;
-        std::map<HcalSubdetector, std::vector<HcalElectronicsId> > eids_;
+        //std::map<HcalSubdetector, std::vector<HcalElectronicsId> > eids_;
         static const std::vector<HcalSubdetector> subdets_;
         HcalElectronicsMap const *emap_;
 
@@ -59,10 +59,10 @@ namespace hcalnano {
         edm::ESHandle<HcalDbService> dbService_;
 
 
-        hcalnano::HBDigiTable *hbDigiTable;
-        hcalnano::HEDigiTable *heDigiTable;
-        hcalnano::HFDigiTable *hfDigiTable;
-        hcalnano::HODigiTable *hoDigiTable;
+        hcalnano::HBDigiTable *hbDigiTable_;
+        hcalnano::HEDigiTable *heDigiTable_;
+        hcalnano::HFDigiTable *hfDigiTable_;
+        hcalnano::HODigiTable *hoDigiTable_;
 
     public:
       explicit HcalDigiTableProducer(const edm::ParameterSet& iConfig) : 
@@ -80,10 +80,10 @@ namespace hcalnano {
         tokenHO_    = consumes<HODigiCollection>(tagHO_);
         tokenQIE10_ = consumes<QIE10DigiCollection>(tagQIE10_);
 
-        produces<nanoaod::FlatTable>("HB");
-        produces<nanoaod::FlatTable>("HE");
-        produces<nanoaod::FlatTable>("HF");
-        produces<nanoaod::FlatTable>("HO");
+        produces<nanoaod::FlatTable>("HBDigiTable");
+        produces<nanoaod::FlatTable>("HEDigiTable");
+        produces<nanoaod::FlatTable>("HFDigiTable");
+        produces<nanoaod::FlatTable>("HODigiTable");
 
         //tagQIE11_ = iConfig.getUntrackedParameter<edm::InputTag>("tagQIE11", edm::InputTag("hcalDigis"));
         //tagHO_ = iConfig.getUntrackedParameter<edm::InputTag>("tagHO", edm::InputTag("hcalDigis"));
@@ -94,10 +94,10 @@ namespace hcalnano {
       }
 
         ~HcalDigiTableProducer() {
-            delete hbDigiTable;
-            delete heDigiTable;
-            delete hfDigiTable;
-            delete hoDigiTable;
+            delete hbDigiTable_;
+            delete heDigiTable_;
+            delete hfDigiTable_;
+            delete hoDigiTable_;
         };
 
         /*
@@ -128,13 +128,13 @@ void hcalnano::HcalDigiTableProducer::beginRun(edm::Run const& iRun, edm::EventS
     iRun.getByToken(tokenChannelInfo_, channelInfo);
 
     dids_ = channelInfo->dids;
-    eids_ = channelInfo->eids;
+    //eids_ = channelInfo->eids;
 
     // Create persistent digi storage
-    hbDigiTable = new hcalnano::HBDigiTable(dids_[HcalBarrel], 8);
-    heDigiTable = new hcalnano::HEDigiTable(dids_[HcalEndcap], 8);
-    hfDigiTable = new hcalnano::HFDigiTable(dids_[HcalForward], 3);
-    hoDigiTable = new hcalnano::HODigiTable(dids_[HcalOuter], 10);
+    hbDigiTable_ = new hcalnano::HBDigiTable(dids_[HcalBarrel], 8);
+    heDigiTable_ = new hcalnano::HEDigiTable(dids_[HcalEndcap], 8);
+    hfDigiTable_ = new hcalnano::HFDigiTable(dids_[HcalForward], 3);
+    hoDigiTable_ = new hcalnano::HODigiTable(dids_[HcalOuter], 10);
 }
 
 
@@ -151,46 +151,46 @@ void hcalnano::HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::Eve
 
     // * Process digis */
     // HB
-    hbDigiTable->reset();
+    hbDigiTable_->reset();
     for (QIE11DigiCollection::const_iterator itDigi = qie11Digis->begin(); itDigi != qie11Digis->end(); ++itDigi) {
         const QIE11DataFrame digi = static_cast<const QIE11DataFrame>(*itDigi);
         HcalDetId const& did = digi.detid();
         if (did.subdet() != HcalBarrel) continue;
 
-        hbDigiTable->add(&digi, dbService_);
+        hbDigiTable_->add(&digi, dbService_);
     } // End loop over qie11 HB digis
 
 
     // HE
-    heDigiTable->reset();
+    heDigiTable_->reset();
     for (QIE11DigiCollection::const_iterator itDigi = qie11Digis->begin(); itDigi != qie11Digis->end(); ++itDigi) {
         const QIE11DataFrame digi = static_cast<const QIE11DataFrame>(*itDigi);
         HcalDetId const& did = digi.detid();
         if (did.subdet() != HcalEndcap) continue;
 
-        heDigiTable->add(&digi, dbService_);
+        heDigiTable_->add(&digi, dbService_);
     } // End loop over qie11 HE digis
 
 
     // HF
-    hfDigiTable->reset();
+    hfDigiTable_->reset();
     for (QIE10DigiCollection::const_iterator itDigi = qie10Digis->begin(); itDigi != qie10Digis->end(); ++itDigi) {
         const QIE10DataFrame digi = static_cast<const QIE10DataFrame>(*itDigi);
         HcalDetId const& did = digi.detid();
         if (did.subdet() != HcalForward) continue;
 
-        hfDigiTable->add(&digi, dbService_);
+        hfDigiTable_->add(&digi, dbService_);
     } // End loop over qie10 HF digis
 
 
     // HO
-    hoDigiTable->reset();
+    hoDigiTable_->reset();
     for (HODigiCollection::const_iterator itDigi = hoDigis->begin(); itDigi != hoDigis->end(); ++itDigi) {
         const HODataFrame digi = static_cast<const HODataFrame>(*itDigi);
         HcalDetId const& did = digi.id();
         if (did.subdet() != HcalOuter) continue;
 
-        hoDigiTable->add(&digi, dbService_);
+        hoDigiTable_->add(&digi, dbService_);
     } // End loop over HO digis
 
 
@@ -198,144 +198,144 @@ void hcalnano::HcalDigiTableProducer::produce(edm::Event& iEvent, const edm::Eve
 
     // HB
     auto hbNanoTable = std::make_unique<nanoaod::FlatTable>(dids_[HcalBarrel].size(), "HBDigis", false, false);
-    hbNanoTable->addColumn<int>("rawId", hbDigiTable->rawIds_, "rawId");
-    hbNanoTable->addColumn<int>("ieta", hbDigiTable->ietas_, "ieta");
-    hbNanoTable->addColumn<int>("iphi", hbDigiTable->iphis_, "iphi");
-    hbNanoTable->addColumn<int>("depth", hbDigiTable->depths_, "depth");
-    hbNanoTable->addColumn<int>("subdet", hbDigiTable->subdets_, "subdet");
-    hbNanoTable->addColumn<bool>("linkError", hbDigiTable->linkErrors_, "linkError");
-    hbNanoTable->addColumn<bool>("capidError", hbDigiTable->capidErrors_, "capidError");
-    hbNanoTable->addColumn<int>("flags", hbDigiTable->flags_, "flags");
-    hbNanoTable->addColumn<int>("soi", hbDigiTable->sois_, "soi");
-    hbNanoTable->addColumn<bool>("valid", hbDigiTable->valids_, "valid");
+    hbNanoTable->addColumn<int>("rawId", hbDigiTable_->rawIds_, "rawId");
+    hbNanoTable->addColumn<int>("ieta", hbDigiTable_->ietas_, "ieta");
+    hbNanoTable->addColumn<int>("iphi", hbDigiTable_->iphis_, "iphi");
+    hbNanoTable->addColumn<int>("depth", hbDigiTable_->depths_, "depth");
+    hbNanoTable->addColumn<int>("subdet", hbDigiTable_->subdets_, "subdet");
+    hbNanoTable->addColumn<bool>("linkError", hbDigiTable_->linkErrors_, "linkError");
+    hbNanoTable->addColumn<bool>("capidError", hbDigiTable_->capidErrors_, "capidError");
+    hbNanoTable->addColumn<int>("flags", hbDigiTable_->flags_, "flags");
+    hbNanoTable->addColumn<int>("soi", hbDigiTable_->sois_, "soi");
+    hbNanoTable->addColumn<bool>("valid", hbDigiTable_->valids_, "valid");
 
     for (unsigned int iTS = 0; iTS < 8; ++iTS) {
         hbNanoTable->addColumn<int>(std::string("adc") + std::to_string(iTS), 
-                                        hbDigiTable->adcs_[iTS], 
+                                        hbDigiTable_->adcs_[iTS], 
                                         std::string("adc") + std::to_string(iTS));
         hbNanoTable->addColumn<int>(std::string("tdc") + std::to_string(iTS), 
-                                        hbDigiTable->tdcs_[iTS], 
+                                        hbDigiTable_->tdcs_[iTS], 
                                         std::string("tdc") + std::to_string(iTS));
         hbNanoTable->addColumn<int>(std::string("capid") + std::to_string(iTS), 
-                                        hbDigiTable->capids_[iTS], 
+                                        hbDigiTable_->capids_[iTS], 
                                         std::string("capid") + std::to_string(iTS));
         hbNanoTable->addColumn<float>(std::string("fc") + std::to_string(iTS), 
-                                        hbDigiTable->fcs_[iTS], 
+                                        hbDigiTable_->fcs_[iTS], 
                                         std::string("fc") + std::to_string(iTS));
         hbNanoTable->addColumn<float>(std::string("pedestalfc") + std::to_string(iTS), 
-                                        hbDigiTable->pedestalfcs_[iTS], 
+                                        hbDigiTable_->pedestalfcs_[iTS], 
                                         std::string("pedestalfc") + std::to_string(iTS));
     }
-    iEvent.put(std::move(hbNanoTable), "HB");
+    iEvent.put(std::move(hbNanoTable), "HBDigiTable");
 
     // HE
     auto heNanoTable = std::make_unique<nanoaod::FlatTable>(dids_[HcalEndcap].size(), "HEDigis", false, false);
-    heNanoTable->addColumn<int>("rawId", heDigiTable->rawIds_, "rawId");
-    heNanoTable->addColumn<int>("ieta", heDigiTable->ietas_, "ieta");
-    heNanoTable->addColumn<int>("iphi", heDigiTable->iphis_, "iphi");
-    heNanoTable->addColumn<int>("depth", heDigiTable->depths_, "depth");
-    heNanoTable->addColumn<int>("subdet", heDigiTable->subdets_, "subdet");
-    heNanoTable->addColumn<bool>("linkError", heDigiTable->linkErrors_, "linkError");
-    heNanoTable->addColumn<bool>("capidError", heDigiTable->capidErrors_, "capidError");
-    heNanoTable->addColumn<int>("flags", heDigiTable->flags_, "flags");
-    heNanoTable->addColumn<int>("soi", heDigiTable->sois_, "soi");
-    heNanoTable->addColumn<bool>("valid", heDigiTable->valids_, "valid");
+    heNanoTable->addColumn<int>("rawId", heDigiTable_->rawIds_, "rawId");
+    heNanoTable->addColumn<int>("ieta", heDigiTable_->ietas_, "ieta");
+    heNanoTable->addColumn<int>("iphi", heDigiTable_->iphis_, "iphi");
+    heNanoTable->addColumn<int>("depth", heDigiTable_->depths_, "depth");
+    heNanoTable->addColumn<int>("subdet", heDigiTable_->subdets_, "subdet");
+    heNanoTable->addColumn<bool>("linkError", heDigiTable_->linkErrors_, "linkError");
+    heNanoTable->addColumn<bool>("capidError", heDigiTable_->capidErrors_, "capidError");
+    heNanoTable->addColumn<int>("flags", heDigiTable_->flags_, "flags");
+    heNanoTable->addColumn<int>("soi", heDigiTable_->sois_, "soi");
+    heNanoTable->addColumn<bool>("valid", heDigiTable_->valids_, "valid");
 
     for (unsigned int iTS = 0; iTS < 8; ++iTS) {
         heNanoTable->addColumn<int>(std::string("adc") + std::to_string(iTS), 
-                                        heDigiTable->adcs_[iTS], 
+                                        heDigiTable_->adcs_[iTS], 
                                         std::string("adc") + std::to_string(iTS));
         heNanoTable->addColumn<int>(std::string("tdc") + std::to_string(iTS), 
-                                        heDigiTable->tdcs_[iTS], 
+                                        heDigiTable_->tdcs_[iTS], 
                                         std::string("tdc") + std::to_string(iTS));
         heNanoTable->addColumn<int>(std::string("capid") + std::to_string(iTS), 
-                                        heDigiTable->capids_[iTS], 
+                                        heDigiTable_->capids_[iTS], 
                                         std::string("capid") + std::to_string(iTS));
         heNanoTable->addColumn<float>(std::string("fc") + std::to_string(iTS), 
-                                        heDigiTable->fcs_[iTS], 
+                                        heDigiTable_->fcs_[iTS], 
                                         std::string("fc") + std::to_string(iTS));
         heNanoTable->addColumn<float>(std::string("pedestalfc") + std::to_string(iTS), 
-                                        heDigiTable->pedestalfcs_[iTS], 
+                                        heDigiTable_->pedestalfcs_[iTS], 
                                         std::string("pedestalfc") + std::to_string(iTS));
     }
-    iEvent.put(std::move(heNanoTable), "HE");
+    iEvent.put(std::move(heNanoTable), "HEDigiTable");
 
     // HF
     auto hfNanoTable = std::make_unique<nanoaod::FlatTable>(dids_[HcalForward].size(), "HFDigis", false, false);
-    hfNanoTable->addColumn<int>("rawId", hfDigiTable->rawIds_, "rawId");
-    hfNanoTable->addColumn<int>("ieta", hfDigiTable->ietas_, "ieta");
-    hfNanoTable->addColumn<int>("iphi", hfDigiTable->iphis_, "iphi");
-    hfNanoTable->addColumn<int>("depth", hfDigiTable->depths_, "depth");
-    hfNanoTable->addColumn<int>("subdet", hfDigiTable->subdets_, "subdet");
-    hfNanoTable->addColumn<bool>("linkError", hfDigiTable->linkErrors_, "linkError");
-    hfNanoTable->addColumn<int>("flags", hfDigiTable->flags_, "flags");
-    hfNanoTable->addColumn<int>("soi", hfDigiTable->sois_, "soi");
-    hfNanoTable->addColumn<bool>("valid", hfDigiTable->valids_, "valid");
+    hfNanoTable->addColumn<int>("rawId", hfDigiTable_->rawIds_, "rawId");
+    hfNanoTable->addColumn<int>("ieta", hfDigiTable_->ietas_, "ieta");
+    hfNanoTable->addColumn<int>("iphi", hfDigiTable_->iphis_, "iphi");
+    hfNanoTable->addColumn<int>("depth", hfDigiTable_->depths_, "depth");
+    hfNanoTable->addColumn<int>("subdet", hfDigiTable_->subdets_, "subdet");
+    hfNanoTable->addColumn<bool>("linkError", hfDigiTable_->linkErrors_, "linkError");
+    hfNanoTable->addColumn<int>("flags", hfDigiTable_->flags_, "flags");
+    hfNanoTable->addColumn<int>("soi", hfDigiTable_->sois_, "soi");
+    hfNanoTable->addColumn<bool>("valid", hfDigiTable_->valids_, "valid");
 
     for (unsigned int iTS = 0; iTS < 3; ++iTS) {
         hfNanoTable->addColumn<int>(std::string("adc") + std::to_string(iTS), 
-                                        hfDigiTable->adcs_[iTS], 
+                                        hfDigiTable_->adcs_[iTS], 
                                         std::string("adc") + std::to_string(iTS));
         hfNanoTable->addColumn<int>(std::string("tdc") + std::to_string(iTS), 
-                                        hfDigiTable->tdcs_[iTS], 
+                                        hfDigiTable_->tdcs_[iTS], 
                                         std::string("tdc") + std::to_string(iTS));
         //hfNanoTable->addColumn<int>(std::string("tetdc") + std::to_string(iTS), 
-        //                                hfDigiTable->tetdcs_[iTS], 
+        //                                hfDigiTable_->tetdcs_[iTS], 
         //                                std::string("tetdc") + std::to_string(iTS));
         hfNanoTable->addColumn<int>(std::string("capid") + std::to_string(iTS), 
-                                        hfDigiTable->capids_[iTS], 
+                                        hfDigiTable_->capids_[iTS], 
                                         std::string("capid") + std::to_string(iTS));
         hfNanoTable->addColumn<float>(std::string("fc") + std::to_string(iTS), 
-                                        hfDigiTable->fcs_[iTS], 
+                                        hfDigiTable_->fcs_[iTS], 
                                         std::string("fc") + std::to_string(iTS));
         hfNanoTable->addColumn<float>(std::string("pedestalfc") + std::to_string(iTS), 
-                                        hfDigiTable->pedestalfcs_[iTS], 
+                                        hfDigiTable_->pedestalfcs_[iTS], 
                                         std::string("pedestalfc") + std::to_string(iTS));
         hfNanoTable->addColumn<float>(std::string("ok") + std::to_string(iTS), 
-                                        hfDigiTable->oks_[iTS], 
+                                        hfDigiTable_->oks_[iTS], 
                                         std::string("ok") + std::to_string(iTS));
     }
-    iEvent.put(std::move(hfNanoTable), "HF");
+    iEvent.put(std::move(hfNanoTable), "HFDigiTable");
 
 
     // HO
     auto hoNanoTable = std::make_unique<nanoaod::FlatTable>(dids_[HcalOuter].size(), "HODigis", false, false);
-    hoNanoTable->addColumn<int>("rawId", hoDigiTable->rawIds_, "rawId");
-    hoNanoTable->addColumn<int>("ieta", hoDigiTable->ietas_, "ieta");
-    hoNanoTable->addColumn<int>("iphi", hoDigiTable->iphis_, "iphi");
-    hoNanoTable->addColumn<int>("depth", hoDigiTable->depths_, "depth");
-    hoNanoTable->addColumn<int>("subdet", hoDigiTable->subdets_, "subdet");
-    hoNanoTable->addColumn<int>("fiberIdleOffset", hoDigiTable->fiberIdleOffsets_, "fiberIdleOffset");
-    hoNanoTable->addColumn<int>("soi", hoDigiTable->sois_, "soi");
-    hoNanoTable->addColumn<bool>("valid", hoDigiTable->valids_, "valid");
+    hoNanoTable->addColumn<int>("rawId", hoDigiTable_->rawIds_, "rawId");
+    hoNanoTable->addColumn<int>("ieta", hoDigiTable_->ietas_, "ieta");
+    hoNanoTable->addColumn<int>("iphi", hoDigiTable_->iphis_, "iphi");
+    hoNanoTable->addColumn<int>("depth", hoDigiTable_->depths_, "depth");
+    hoNanoTable->addColumn<int>("subdet", hoDigiTable_->subdets_, "subdet");
+    hoNanoTable->addColumn<int>("fiberIdleOffset", hoDigiTable_->fiberIdleOffsets_, "fiberIdleOffset");
+    hoNanoTable->addColumn<int>("soi", hoDigiTable_->sois_, "soi");
+    hoNanoTable->addColumn<bool>("valid", hoDigiTable_->valids_, "valid");
 
     for (unsigned int iTS = 0; iTS < 10; ++iTS) {
         hoNanoTable->addColumn<int>(std::string("adc") + std::to_string(iTS), 
-                                        hoDigiTable->adcs_[iTS], 
+                                        hoDigiTable_->adcs_[iTS], 
                                         std::string("adc") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("capid") + std::to_string(iTS), 
-                                        hoDigiTable->capids_[iTS], 
+                                        hoDigiTable_->capids_[iTS], 
                                         std::string("capid") + std::to_string(iTS));
         hoNanoTable->addColumn<float>(std::string("fc") + std::to_string(iTS), 
-                                        hoDigiTable->fcs_[iTS], 
+                                        hoDigiTable_->fcs_[iTS], 
                                         std::string("fc") + std::to_string(iTS));
         hoNanoTable->addColumn<float>(std::string("pedestalfc") + std::to_string(iTS), 
-                                        hoDigiTable->pedestalfcs_[iTS], 
+                                        hoDigiTable_->pedestalfcs_[iTS], 
                                         std::string("pedestalfc") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("fiber") + std::to_string(iTS), 
-                                        hoDigiTable->fibers_[iTS], 
+                                        hoDigiTable_->fibers_[iTS], 
                                         std::string("fiber") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("fiberChan") + std::to_string(iTS), 
-                                        hoDigiTable->fiberChans_[iTS], 
+                                        hoDigiTable_->fiberChans_[iTS], 
                                         std::string("fiberChan") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("dv") + std::to_string(iTS), 
-                                        hoDigiTable->dvs_[iTS], 
+                                        hoDigiTable_->dvs_[iTS], 
                                         std::string("dv") + std::to_string(iTS));
         hoNanoTable->addColumn<int>(std::string("er") + std::to_string(iTS), 
-                                        hoDigiTable->ers_[iTS], 
+                                        hoDigiTable_->ers_[iTS], 
                                         std::string("er") + std::to_string(iTS));
     }
-    iEvent.put(std::move(hoNanoTable), "HO");
+    iEvent.put(std::move(hoNanoTable), "HODigiTable");
 
 }
 

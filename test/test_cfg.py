@@ -45,7 +45,12 @@ options.register('compressionAlgorithm',
                 VarParsing.VarParsing.varType.string)
 
 options.register('compressionLevel', 
-                4, 
+                5, 
+                VarParsing.VarParsing.multiplicity.singleton, 
+                VarParsing.VarParsing.varType.int)
+
+options.register('reportEvery', 
+                100, 
                 VarParsing.VarParsing.multiplicity.singleton, 
                 VarParsing.VarParsing.varType.int)
 
@@ -88,7 +93,7 @@ process.options.numberOfStreams=cms.untracked.uint32(0)
 
 # Reduce message log output
 process.load('FWCore.MessageService.MessageLogger_cfi')
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(10)
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(options.reportEvery)
 
 #process.load('Configuration.StandardSequences.Services_cff')
 #process.load('Configuration.EventContent.EventContent_cff')

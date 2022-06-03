@@ -24,6 +24,7 @@
 <use name="CondFormats/DataRecord"/>
 <use name="DQM/HcalCommon"/>
 <use name="CalibFormats/CaloObjects"/>
-<library file="*.cc" name="HCALPFGHcalNano">
+<use name="HCALPFG/HcalNano"/>
+<library file="*.cc" name="HCALPFGHcalNano_plugins">
   <flags EDM_PLUGIN="1"/>
 </library>

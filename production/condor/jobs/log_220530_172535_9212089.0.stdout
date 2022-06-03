@@ -1,0 +1,60 @@
+/pool/condor/dir_31233/x509up
+-rw-------. 1 dryu zh 11K May 30 17:30 /pool/condor/dir_31233/x509up
+subject   : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dryu/CN=718606/CN=David Yu/CN=1471631789
+issuer    : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dryu/CN=718606/CN=David Yu
+identity  : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dryu/CN=718606/CN=David Yu
+type      : RFC3820 compliant impersonation proxy
+strength  : 2048
+path      : /pool/condor/dir_31233/x509up
+timeleft  : 71:47:49
+key usage : Digital Signature, Key Encipherment
+=== VO cms extension information ===
+VO        : cms
+subject   : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dryu/CN=718606/CN=David Yu
+issuer    : /DC=ch/DC=cern/OU=computers/CN=lcg-voms2.cern.ch
+attribute : /cms/Role=NULL/Capability=NULL
+timeleft  : 71:47:49
+uri       : lcg-voms2.cern.ch:15002
+
+total 80K
+-rw-------. 1 dryu zh  11K May 30 17:30 x509up
+-rw-r--r--. 1 dryu zh 8.2K May 30 17:30 test_cfg.py
+-rw-r--r--. 1 dryu zh  361 May 30 17:30 runOnCondor.sh
+-rw-r--r--. 1 dryu zh  368 May 30 17:30 condor_run_220530_172535.sh
+-rwxr-xr-x. 1 dryu zh  368 May 30 17:30 condor_exec.exe
+-rw-------. 1 dryu zh  32K May 30 17:30 dryu.cc
+drwx------. 3 dryu zh 4.0K May 30 17:30 var
+-rw-r--r--. 1 dryu zh    0 May 30 17:30 _condor_stderr
+drwx------. 4 dryu zh 4.0K May 30 17:30 tmp
+-rw-r--r--. 1 dryu zh  838 May 30 17:30 _condor_stdout
+/pool/condor/dir_31233
+runOnCondor.sh: line 8: cmsRun: command not found
+total 12K
+-rw-r--r--. 1 dryu zh 8.2K May 30 17:30 test_cfg.py
+/pool/condor/dir_31233/work
+total 76K
+-rw-------. 1 dryu zh  11K May 30 17:30 x509up
+-rw-r--r--. 1 dryu zh  361 May 30 17:30 runOnCondor.sh
+-rw-r--r--. 1 dryu zh  368 May 30 17:30 condor_run_220530_172535.sh
+-rwxr-xr-x. 1 dryu zh  368 May 30 17:30 condor_exec.exe
+-rw-------. 1 dryu zh  32K May 30 17:30 dryu.cc
+drwx------. 3 dryu zh 4.0K May 30 17:30 var
+drwx------. 4 dryu zh 4.0K May 30 17:30 tmp
+drwxr-xr-x. 2 dryu zh 4.0K May 30 17:30 work
+-rw-r--r--. 1 dryu zh   50 May 30 17:30 _condor_stderr
+-rw-r--r--. 1 dryu zh 1.5K May 30 17:30 _condor_stdout
+Job done.
+total 12K
+-rw-r--r--. 1 dryu zh 8.2K May 30 17:30 test_cfg.py
+total 76K
+-rw-------. 1 dryu zh  11K May 30 17:30 x509up
+-rw-r--r--. 1 dryu zh  361 May 30 17:30 runOnCondor.sh
+-rw-r--r--. 1 dryu zh  368 May 30 17:30 condor_run_220530_172535.sh
+-rwxr-xr-x. 1 dryu zh  368 May 30 17:30 condor_exec.exe
+-rw-------. 1 dryu zh  32K May 30 17:30 dryu.cc
+drwx------. 3 dryu zh 4.0K May 30 17:30 var
+drwx------. 4 dryu zh 4.0K May 30 17:30 tmp
+drwxr-xr-x. 2 dryu zh 4.0K May 30 17:30 work
+-rw-r--r--. 1 dryu zh 2.1K May 30 17:30 _condor_stdout
+-rw-r--r--. 1 dryu zh  158 May 30 17:30 _condor_stderr
+Run time 1

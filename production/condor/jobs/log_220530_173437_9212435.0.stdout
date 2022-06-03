@@ -1,0 +1,51 @@
+/pool/condor/dir_1716/x509up
+-rw-------. 1 dryu zh 11K May 30 17:36 /pool/condor/dir_1716/x509up
+subject   : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dryu/CN=718606/CN=David Yu/CN=1471631789
+issuer    : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dryu/CN=718606/CN=David Yu
+identity  : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dryu/CN=718606/CN=David Yu
+type      : RFC3820 compliant impersonation proxy
+strength  : 2048
+path      : /pool/condor/dir_1716/x509up
+timeleft  : 71:42:19
+key usage : Digital Signature, Key Encipherment
+=== VO cms extension information ===
+VO        : cms
+subject   : /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=dryu/CN=718606/CN=David Yu
+issuer    : /DC=ch/DC=cern/OU=computers/CN=lcg-voms2.cern.ch
+attribute : /cms/Role=NULL/Capability=NULL
+timeleft  : 71:42:19
+uri       : lcg-voms2.cern.ch:15002
+
+total 72K
+-rw-------. 1 dryu zh  11K May 30 17:36 x509up
+-rw-r--r--. 1 dryu zh 8.2K May 30 17:36 test_cfg.py
+-rw-r--r--. 1 dryu zh  361 May 30 17:36 runOnCondor.sh
+-rw-r--r--. 1 dryu zh  382 May 30 17:36 condor_run_220530_173437.sh
+-rwxr-xr-x. 1 dryu zh  382 May 30 17:36 condor_exec.exe
+-rw-------. 1 dryu zh  32K May 30 17:36 dryu.cc
+drwx------. 3 dryu zh   17 May 30 17:36 var
+-rw-r--r--. 1 dryu zh    0 May 30 17:36 _condor_stderr
+drwx------. 4 dryu zh   45 May 30 17:36 tmp
+-rw-r--r--. 1 dryu zh  835 May 30 17:36 _condor_stdout
+/pool/condor/dir_1716
+runOnCondor.sh: line 8: cmsRun: command not found
+total 12K
+-rw-r--r--. 1 dryu zh 8.2K May 30 17:36 test_cfg.py
+/pool/condor/dir_1716/work
+total 64K
+-rw-------. 1 dryu zh  11K May 30 17:36 x509up
+-rw-r--r--. 1 dryu zh  361 May 30 17:36 runOnCondor.sh
+-rw-r--r--. 1 dryu zh  382 May 30 17:36 condor_run_220530_173437.sh
+-rwxr-xr-x. 1 dryu zh  382 May 30 17:36 condor_exec.exe
+-rw-------. 1 dryu zh  32K May 30 17:36 dryu.cc
+drwx------. 3 dryu zh   17 May 30 17:36 var
+drwx------. 4 dryu zh   45 May 30 17:36 tmp
+drwxr-xr-x. 2 dryu zh   25 May 30 17:36 work
+-rw-r--r--. 1 dryu zh   50 May 30 17:36 _condor_stderr
+-rw-r--r--. 1 dryu zh 1.5K May 30 17:36 _condor_stdout
+Job done.
+Contents of current directory:
+ls -lrth
+Contents of top directory:
+ls -lrth /pool/condor/dir_1716
+Run time 1

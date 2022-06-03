@@ -1,0 +1,5 @@
+mv: cannot stat ‘../../test/test_cfg.py’: No such file or directory
+mv: cannot stat ‘workcd’: No such file or directory
+mv: cannot stat ‘*root’: No such file or directory
+condor_exec.exe: line 10: Contents: command not found
+condor_exec.exe: line 13: Contents: command not found

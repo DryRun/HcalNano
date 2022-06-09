@@ -24,6 +24,6 @@ scram b -j8
 Example:
 ```
 cd $CMSSW_BASE/src/HCALPFG/HcalNano/test
-cmsRun test_cfg.py inputFiles=root:///store/group/dpg_hcal/comm_hcal/Splashes2022/splashes_350968_FEVT.root outputFile=hcalnano_test.root nThreads=4 compressionAlgorithm=ZLIB compressionLevel=5
+cmsRun test_cfg.py inputFiles=root://eoscms.cern.ch//store/group/dpg_hcal/comm_hcal/Splashes2022/splashes_350968_FEVT.root outputFile=hcalnano_test.root nThreads=4 compressionAlgorithm=ZLIB compressionLevel=5
 ```
 

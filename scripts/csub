@@ -58,6 +58,7 @@ parser.add_argument('--cmssw', action='store_true', help='Transfer CMSSW librari
 #parser.add_argument('--cmssw_src', action='store_true', help='Transfer CMSSW src as a tarball, and compile on worker node')
 parser.add_argument('--no_retar', action='store_true', help='Use existing tarball')
 parser.add_argument("--x509", "-x", type=str, default=None, help="Path to x509 proxy")
+parser.add_argument("--timestamp", type=str, default=None, help="Overwrite timestamp")
 args = parser.parse_args()
 
 #scripts = [os.path.realpath(x) for x in args.scripts.split(",")]
@@ -75,6 +76,9 @@ files_to_transfer = []
 files_to_transfer.append(args.script)
 
 cmssw_version = os.path.expandvars("$CMSSW_VERSION")
+
+if args.timestamp: 
+	job_ts = args.timestamp
 
 #data_directory = "/uscms/home/dryu/nobackup/"
 #data_directory = "/home/dryu/data/"

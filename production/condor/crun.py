@@ -30,7 +30,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Run HcalNano on condor")
     parser.add_argument("cfg", type=str, help="Path to cmsRun cfg (relative or absolute)")
-    parser.add_argument("--extraArgs", type=str, help="Extra cmsRun args, in quotes (besides inputFiles and outputFile, see dedicated args for those)")
+    parser.add_argument("--extraArgs", type=str, default="", help="Extra cmsRun args, in quotes (besides inputFiles and outputFile, see dedicated args for those)")
     parser.add_argument("--inputFiles", "-i", type=str, help="Input files, comma-separated")
     parser.add_argument("--inputTxt", "-I", type=str, help="Path to text file containing input files (newline-separated)")
     parser.add_argument("--outputFile", "-o", type=str, default="hcalnano.root", help="Name of output file")
@@ -42,7 +42,12 @@ if __name__ == "__main__":
     parser.add_argument("--max_nthreads", type=int, default=4, help="Maximum number of threads (reduce if condor priority is a problem)")
     parser.add_argument("--mem", type=int, default=7900, help="Memory to request")
     parser.add_argument("--overwrite", "-f", action="store_true", help="Force overwrite outputs")
+    parser.add_argument("--no_retar", "-t", action="store_true", help="Don't recreate CMSSW tarball (saves time, but be careful)")
     args = parser.parse_args()
+
+    import datetime
+    current_datetime = datetime.datetime.now()
+    job_ts = current_datetime.strftime("%y%m%d_%H%M%S")
 
     # Check fragment exists
     cfg_abspath = os.path.abspath(args.cfg)
@@ -153,7 +158,7 @@ if __name__ == "__main__":
     os.chdir("{}".format(csub_dir))
 
     # Create script that runs on the worker node
-    with open("runOnCondor.sh", 'w') as run_script:
+    with open(f"runOnCondor_{job_ts}.sh", 'w') as run_script:
         run_script.write("#!/bin/bash\n")
         run_script.write("ls -lrth\n")
         run_script.write("pwd\n")
@@ -192,12 +197,15 @@ if __name__ == "__main__":
         run_script.write("ls -lrth $_CONDOR_SCRATCH_DIR\n")
 
     files_to_transfer = [cfg_abspath]
-    csub_command = f"csub runOnCondor.sh -t tomorrow --cmssw \
+    csub_command = f"csub runOnCondor_{job_ts}.sh -t tomorrow --cmssw \
 --mem {args.mem} \
 --nCores {args.max_nthreads} \
 -F {','.join(files_to_transfer)} \
 --queue_n {len(input_files)} \
--x $HOME/private/x509up"
+-x $HOME/private/x509up \
+--timestamp {job_ts}"
+    if args.no_retar:
+        csub_command += " --no_retar"
     '''
     if not args.os:
         # Infer OS from campaign

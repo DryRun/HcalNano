@@ -58,13 +58,16 @@ if __name__ == "__main__":
 
     # Check proxy, make new one if necessary
     proxy_path = os.path.expandvars("$HOME/private/x509up")
-    if not os.path.isfile(proxy_path):
+    while not os.path.isfile(proxy_path):
+        print("Proxy doesn't exist. Attempting to make a new one.")
         make_proxy(proxy_path)
-    elif get_proxy_lifetime(proxy_path) < 24: # Require proxy with >24h left
+
+    while get_proxy_lifetime(proxy_path) < 24: # Require proxy with >24h left
+        print("Proxy has short lifetime. Attempting to make a new one.")
         make_proxy(proxy_path)
-    else:
-        print("Using existing x509 proxy:")
-        os.system("voms-proxy-info -file {}".format(proxy_path))
+
+    print("Using existing x509 proxy:")
+    os.system("voms-proxy-info -file {}".format(proxy_path))
 
     input_files = []
     if args.inputFiles and args.inputTxt:

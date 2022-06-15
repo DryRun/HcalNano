@@ -141,9 +141,9 @@ print(" ")
 #------------------------------------------------------------------------------------
 #from PhysicsTools.NanoAOD.common_cff import *
 process.load("PhysicsTools.NanoAOD.nano_cff")
+process.load("HCALPFG.HcalNano.hcaleventtable_cff")
 process.load("HCALPFG.HcalNano.hcalchannelinfotable_cff") # loads all modules
 process.load("HCALPFG.HcalNano.hcaldigitable_cff") # loads all modules
-
 
 #process.nano_step = cms.Sequence(
 #    process.hcalDigiTable
@@ -157,6 +157,7 @@ process.hcalNanoPrep = cms.Sequence(process.hcalChannelInfoTable)
 
 process.hcalNanoTask = cms.Task(
     #process.hcalChannelInfoTable,
+    process.hcalEventTable, 
     process.hcalDigis, 
     process.hcalDigiTable)
 

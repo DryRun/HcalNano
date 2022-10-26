@@ -1,3 +1,6 @@
+### Disclaimer
+I'm merging HcalNano into github.com/cms-sw/cmssw, so this repository will soon be obsolete. 
+
 # HcalNano
 An EDM analyer for analyzing HCAL digis and RecHits. This supersedes https://github.com/HCALPFG/HcalTupleMaker, replacing the custom output module with CMSSW NanoAODOutputModule. 
 
